@@ -1,0 +1,54 @@
+# Canonical single CI workflow for this repository.
+#
+# The terminal job is named exactly "Pipeline Complete" and is the only
+# required status check in the org ruleset.
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
+
+permissions:
+  contents: read
+
+jobs:
+  lint:
+    name: ShellCheck
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install shellcheck
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y shellcheck
+      - name: Run shellcheck
+        run: |
+          shellcheck \
+            scripts/*.sh \
+            tests/*.sh \
+            examples/basic/scripts/*.sh
+
+  self-test:
+    name: Self Test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Run example drift checks
+        run: tests/self-test.sh
+
+  pipeline-complete:
+    name: Pipeline Complete
+    if: always()
+    needs: [lint, self-test]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Verify all gating jobs succeeded
+        uses: re-actors/alls-green@release/v1
+        with:
+          jobs: ${{ toJSON(needs) }}

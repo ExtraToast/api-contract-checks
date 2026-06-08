@@ -1,0 +1,26 @@
+name: Feature request
+description: Propose a new capability or enhancement.
+labels: ["enhancement"]
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem / motivation
+      description: What is missing or painful today, and why it matters.
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed change
+    validations:
+      required: true
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives considered
+  - type: input
+    id: milestone
+    attributes:
+      label: Related milestone / epic
+      description: Link the epic or milestone this belongs to, if known.

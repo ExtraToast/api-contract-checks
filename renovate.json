@@ -1,0 +1,26 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": [
+    "config:recommended",
+    ":semanticCommits",
+    ":dependencyDashboard"
+  ],
+  "rangeStrategy": "pin",
+  "labels": ["dependencies"],
+  "minimumReleaseAge": "3 days",
+  "packageRules": [
+    {
+      "description": "Group all ExtraToast shared artifacts so a coherent platform bump lands in one PR.",
+      "matchPackagePatterns": ["^dev\\.extratoast", "^@extratoast/"],
+      "matchDepNames": ["ExtraToast/github-workflows"],
+      "groupName": "extratoast shared artifacts",
+      "labels": ["dependencies", "extratoast-platform"]
+    },
+    {
+      "description": "Pin GitHub Actions to immutable refs.",
+      "matchManagers": ["github-actions"],
+      "pinDigests": true
+    }
+  ],
+  "lockFileMaintenance": { "enabled": true }
+}

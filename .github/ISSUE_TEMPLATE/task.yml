@@ -1,0 +1,30 @@
+name: Task
+description: A unit of tracked work under an epic / milestone.
+labels: ["task"]
+body:
+  - type: textarea
+    id: objective
+    attributes:
+      label: Objective
+      description: The outcome this task delivers (definition of done).
+    validations:
+      required: true
+  - type: input
+    id: epic
+    attributes:
+      label: Epic / milestone
+      description: The tracking epic and milestone this task rolls up to.
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Work
+      description: Checklist of concrete steps.
+      value: |
+        - [ ]
+  - type: textarea
+    id: deps
+    attributes:
+      label: Dependencies
+      description: Issues that must complete first / repos affected.

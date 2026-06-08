@@ -1,0 +1,5 @@
+blank_issues_enabled: false
+contact_links:
+  - name: ExtraToast platform conventions
+    url: https://github.com/ExtraToast/repo-template/blob/main/CONTRIBUTING.md
+    about: Branch, PR, CI (Pipeline Complete) and versioning conventions for every repo.
