@@ -1,0 +1,23 @@
+# Tag -> release flow (org standard).
+#
+# release-please maintains a release PR that accumulates conventional commits
+# and, when merged, creates a vX.Y.Z git tag plus a GitHub Release. Consumers
+# pin this action repository to those immutable release tags.
+name: Release
+
+on:
+  push:
+    branches: [main]
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  release-please:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: googleapis/release-please-action@v4
+        with:
+          config-file: release-please-config.json
+          manifest-file: .release-please-manifest.json

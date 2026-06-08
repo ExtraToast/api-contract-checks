@@ -1,0 +1,11 @@
+# Renovate (renovate.json) is the primary dependency manager for ExtraToast
+# repos. Dependabot is enabled only for GitHub Actions security updates as a
+# belt-and-braces fallback; disable this file if Renovate covers actions in a
+# given repo.
+version: 2
+updates:
+  - package-ecosystem: github-actions
+    directory: "/"
+    schedule:
+      interval: weekly
+    labels: ["dependencies", "github_actions"]

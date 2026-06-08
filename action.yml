@@ -1,0 +1,71 @@
+name: API Contract Checks
+description: Validate committed OpenAPI specs and generated TypeScript contracts against fresh outputs.
+
+inputs:
+  profile:
+    description: Service profile name shown in drift reports.
+    required: true
+  spec-path:
+    description: Committed OpenAPI spec path.
+    required: true
+  export-command:
+    description: Command that exports the fresh OpenAPI spec in place at spec-path.
+    required: true
+  spec-normalize-command:
+    description: Optional command that normalizes spec-path after export.
+    required: false
+    default: ""
+  types-paths:
+    description: Newline- or comma-separated committed generated TypeScript artifact paths.
+    required: false
+    default: ""
+  types-generate-command:
+    description: Command that regenerates the declared TypeScript artifacts in place.
+    required: false
+    default: ""
+  types-normalize-command:
+    description: Optional command that normalizes the generated TypeScript artifacts after generation.
+    required: false
+    default: ""
+  guidance:
+    description: Maintainer-facing regeneration command or note printed when drift is detected.
+    required: true
+
+runs:
+  using: composite
+  steps:
+    - name: Run contract drift checks
+      shell: bash
+      env:
+        INPUT_PROFILE: ${{ inputs.profile }}
+        INPUT_SPEC_PATH: ${{ inputs.spec-path }}
+        INPUT_EXPORT_COMMAND: ${{ inputs.export-command }}
+        INPUT_SPEC_NORMALIZE_COMMAND: ${{ inputs.spec-normalize-command }}
+        INPUT_TYPES_PATHS: ${{ inputs.types-paths }}
+        INPUT_TYPES_GENERATE_COMMAND: ${{ inputs.types-generate-command }}
+        INPUT_TYPES_NORMALIZE_COMMAND: ${{ inputs.types-normalize-command }}
+        INPUT_GUIDANCE: ${{ inputs.guidance }}
+      run: |
+        set -euo pipefail
+
+        args=(
+          --profile "${INPUT_PROFILE}"
+          --spec-path "${INPUT_SPEC_PATH}"
+          --export-command "${INPUT_EXPORT_COMMAND}"
+          --guidance "${INPUT_GUIDANCE}"
+        )
+
+        if [[ -n "${INPUT_SPEC_NORMALIZE_COMMAND}" ]]; then
+          args+=(--spec-normalize-command "${INPUT_SPEC_NORMALIZE_COMMAND}")
+        fi
+        if [[ -n "${INPUT_TYPES_PATHS}" ]]; then
+          args+=(--types-paths "${INPUT_TYPES_PATHS}")
+        fi
+        if [[ -n "${INPUT_TYPES_GENERATE_COMMAND}" ]]; then
+          args+=(--types-generate-command "${INPUT_TYPES_GENERATE_COMMAND}")
+        fi
+        if [[ -n "${INPUT_TYPES_NORMALIZE_COMMAND}" ]]; then
+          args+=(--types-normalize-command "${INPUT_TYPES_NORMALIZE_COMMAND}")
+        fi
+
+        "${GITHUB_ACTION_PATH}/scripts/api-contract-checks.sh" "${args[@]}"
