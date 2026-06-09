@@ -16,8 +16,26 @@ permissions:
 jobs:
   release-please:
     runs-on: ubuntu-latest
+    outputs:
+      release_created: ${{ steps.release.outputs.release_created }}
+      tag_name: ${{ steps.release.outputs.tag_name }}
     steps:
-      - uses: googleapis/release-please-action@v5
+      - id: release
+        uses: googleapis/release-please-action@v5
         with:
           config-file: release-please-config.json
           manifest-file: .release-please-manifest.json
+
+  publish:
+    # This repository is a composite GitHub Action consumed by version tag/ref,
+    # not a package registry artifact.
+    if: ${{ needs.release-please.outputs.release_created == 'true' }}
+    needs: release-please
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - name: Publish released action tag
+        run: echo "Published API Contract Checks action tag ${RELEASE_TAG}"
+        env:
+          RELEASE_TAG: ${{ needs.release-please.outputs.tag_name }}
