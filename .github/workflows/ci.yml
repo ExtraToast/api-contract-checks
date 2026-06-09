@@ -45,7 +45,8 @@ jobs:
         run: bash <(curl --fail --silent --show-error --location https://raw.githubusercontent.com/rhysd/actionlint/main/scripts/download-actionlint.bash)
       - name: Lint GitHub Actions workflows
         shell: bash
-        run: "${{ steps.actionlint.outputs.executable }}" -color .github/workflows/*.yml
+        run: |
+          "${{ steps.actionlint.outputs.executable }}" -color .github/workflows/*.yml
 
   self-test:
     name: Self Test
