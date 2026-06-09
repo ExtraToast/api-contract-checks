@@ -34,6 +34,16 @@ jobs:
             tests/*.sh \
             examples/basic/scripts/*.sh
 
+  workflow-lint:
+    name: Workflow Lint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - name: Run actionlint
+        uses: rhysd/actionlint@v1
+        with:
+          args: .github/workflows/*.yml
+
   self-test:
     name: Self Test
     runs-on: ubuntu-latest
@@ -45,7 +55,7 @@ jobs:
   pipeline-complete:
     name: Pipeline Complete
     if: always()
-    needs: [lint, self-test]
+    needs: [lint, workflow-lint, self-test]
     runs-on: ubuntu-latest
     steps:
       - name: Verify all gating jobs succeeded
